@@ -108,15 +108,37 @@ func (tc *Client) GetAccountPositions() ([]*Position, error) {
 	return result.Positions.Position, err
 }
 
-func (tc *Client) GetAccountHistory(limit int) ([]*Event, error) {
+func (tc *Client) GetAccountHistoryParams() map[string]string {
+	params := map[string]string{
+		"page":       "1",
+		"limit":      "25",
+		"type":       "trade",
+		"start":      "", // yyyy-mm-dd
+		"end":        "", // yyyy-mm-dd
+		"symbol":     "",
+		"exactMatch": "false",
+	}
+
+	return params
+}
+
+// GetAccountHistory
+// see https://documentation.tradier.com/brokerage-api/accounts/get-account-history
+func (tc *Client) GetAccountHistory(params map[string]string) ([]*Event, error) {
 	if tc.account == "" {
 		return nil, ErrNoAccountSelected
 	}
 
-	url := tc.endpoint + "/v1/accounts/" + tc.account + "/history"
-	if limit > 0 {
-		url += fmt.Sprintf("?limit=%d", limit)
+	url := tc.endpoint + "/v1/accounts/" + tc.account + "/history?"
+	amp := ""
+
+	for key, value := range params {
+		if value != "" {
+			url += fmt.Sprintf("%v%v=%v", amp, key, value)
+			amp = "&"
+		}
 	}
+
 	var result struct {
 		History struct {
 			Event []*Event

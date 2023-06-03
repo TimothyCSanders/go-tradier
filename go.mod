@@ -1,4 +1,4 @@
-module github.com/gnagel/go-tradier
+module github.com/timothycsanders/go-tradier
 
 go 1.15
 
