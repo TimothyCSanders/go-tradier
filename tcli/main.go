@@ -4,8 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-
-	"github.com/gnagel/go-tradier"
 )
 
 func showPositions(client *tradier.Client) {
